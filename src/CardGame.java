@@ -19,7 +19,7 @@ public class CardGame {
 
         decks = new Queue[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            decks[i] = new LinkedList<Card>();
+            decks[i] = new LinkedList<>();
         }
         
         players = generatePlayers(numPlayers);

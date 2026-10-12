@@ -6,8 +6,8 @@ public class Player extends Thread{
     private volatile Queue<Card> discardDeck;
 
     private volatile boolean done = false;
-    private int Id;
-    private PriorityQueue<Card> hand;
+    final private int Id;
+    final private PriorityQueue<Card> hand;
 
     public Player(int Id, Queue<Card> drawDeck, Queue<Card> discardDeck) {
         this.Id = Id;
@@ -36,7 +36,7 @@ public class Player extends Thread{
     @Override
     public void run() {
         while (!done) {
-            if (this.drawDeck.size() > 0) {
+            if (this.drawDeck.isEmpty()) {
                 Card cardDrawn = this.drawDeck.poll();
                 this.hand.add(cardDrawn);
 
