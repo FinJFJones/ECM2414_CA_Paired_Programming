@@ -3,14 +3,19 @@ import java.util.Queue;
 
 import java.util.Scanner;
 
+import java.io.FileNotFoundException;
+
+
 public class CardGame {
-    volatile Queue<Card> pack = new LinkedList<>(); // Change to read pack
+    volatile Queue<Card> pack; // Change to read pack
     volatile Player[] players;
     volatile Queue<Card>[] decks;
 
     volatile int winner = -1;
 
     public static void main(String[] args) {
+        CardGame game = new CardGame();
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please enter the number of players:");
@@ -20,6 +25,12 @@ public class CardGame {
         String packPath = scanner.nextLine();
 
         scanner.close();
+
+        try {
+            game.pack = Utils.readPack(packPath);
+        } catch (FileNotFoundException e) {
+            System.err.println(e);
+        }
         
         // Ask for number players
         // players = num from asking
