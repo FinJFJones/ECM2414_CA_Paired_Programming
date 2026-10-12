@@ -45,24 +45,24 @@ public class CardGame {
         }
         
         System.out.println(winner);
+        
+        // Ask for number players                                   | Done
+        // players = num from asking                                | Done
+        // decks = num from asking                                  | Done
 
-        // Ask for number players
-        // players = num from asking
-        // decks = num from asking
+        // Distribute round-robin to player's hands                 | Done
+        // Distribute round-robin to decks                          | Done
+        // Pack is now empty                                        | Done
 
-        // Distribute round-robin to player's hands
-        // Distribute round-robin to decks
-        // Pack is now empty
+        // Check if someone's won                                   | Done
+        // Don't start gameloop if yes                              | Done
+        // Start gameloop if no                                     | Done
 
-        // Check if someone's won
-        // Don't start gameloop if yes
-        // Start gameloop if no
-
-        // Game loop
-        // Call threads
-        // Players do their turn (draw, discard, check win)
-        // If winning flag, stop threads
-        // Print winner and write files
+        // Game loop                                                | Done
+        // Call threads                                             | Done
+        // Players do their turn (draw, discard, check win)         | Done
+        // If winning flag, stop threads                            | Done
+        // Print winner and write files                             | Not done
     }
 
     public static int getNumPlayers(Scanner scanner) {
