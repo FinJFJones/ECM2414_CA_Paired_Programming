@@ -1,37 +1,17 @@
-import java.util.LinkedList;
+import java.io.FileNotFoundException;
 import java.util.Queue;
-
 import java.util.Scanner;
 
-import java.io.FileNotFoundException;
-
-
 public class CardGame {
-    volatile Queue<Card> pack; // Change to read pack
+    private volatile static Queue<Card> pack; // Change to read pack
     volatile Player[] players;
     volatile Queue<Card>[] decks;
 
     volatile int winner = -1;
 
     public static void main(String[] args) {
-        CardGame game = new CardGame();
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Please enter the number of players:");
-        String players = scanner.nextLine();
-
-        System.out.println("Please enter location of pack to load:");
-        String packPath = scanner.nextLine();
-
-        scanner.close();
-
-        try {
-            game.pack = Utils.readPack(packPath);
-        } catch (FileNotFoundException e) {
-            System.err.println(e);
-        }
-        
+        int numPlayers = getNumPlayers();
+        pack = getPack(numPlayers);
         // Ask for number players
         // players = num from asking
         // decks = num from asking
@@ -45,9 +25,49 @@ public class CardGame {
         // Start gameloop if no
 
         // Game loop
-            // Call threads
-            // Players do their turn (draw, discard, check win)
+        // Call threads
+        // Players do their turn (draw, discard, check win)
         // If winning flag, stop threads
         // Print winner and write files
+    }
+
+    public static int getNumPlayers() {
+        int numPlayers = -1;
+        Scanner scanner = new Scanner(System.in);
+        while (numPlayers < 1) {
+
+            System.out.println("Please enter the number of players:");
+            String playersString = scanner.nextLine();
+            try {
+                numPlayers = Integer.parseInt(playersString);
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number of players.");
+            }
+        }
+        scanner.close();
+        return numPlayers;
+    }
+
+    public static Queue<Card> getPack(int n) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (pack == null) {
+            System.out.println("Please enter location of pack to load:");
+            String packPath = scanner.nextLine();
+
+            try {
+                pack = Utils.readPack(packPath);
+            } catch (FileNotFoundException e) {
+                System.err.println(e);
+            }
+
+            if (pack.size() != 8*n){
+                pack = null;
+            }
+        }
+
+        scanner.close();
+        return pack;
     }
 }
