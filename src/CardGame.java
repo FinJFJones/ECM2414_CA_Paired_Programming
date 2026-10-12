@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -6,7 +7,7 @@ import java.util.Scanner;
 public class CardGame {
     private volatile static Queue<Card> pack; // Change to read pack
     private volatile static Player[] players;
-    private volatile static  Queue<Card>[] decks;
+    private volatile static Queue<Card>[] decks;
 
     volatile int winner = -1;
 
@@ -17,27 +18,33 @@ public class CardGame {
         scanner.close();
 
         players = generatePlayers(numPlayers);
+        decks = new Queue[numPlayers];
+        for (int i = 0; i < numPlayers; i++) {
+            decks[i] = new LinkedList<Card>();
+        }
 
         Dealing.dealHands(pack, players);
+        Dealing.dealDecks(pack, decks);
 
+        
 
         // Ask for number players
-            // players = num from asking
-            // decks = num from asking
+        // players = num from asking
+        // decks = num from asking
 
-            // Distribute round-robin to player's hands
-            // Distribute round-robin to decks
-            // Pack is now empty
+        // Distribute round-robin to player's hands
+        // Distribute round-robin to decks
+        // Pack is now empty
 
-            // Check if someone's won
-            // Don't start gameloop if yes
-            // Start gameloop if no
+        // Check if someone's won
+        // Don't start gameloop if yes
+        // Start gameloop if no
 
-            // Game loop
-            // Call threads
-            // Players do their turn (draw, discard, check win)
-            // If winning flag, stop threads
-            // Print winner and write files
+        // Game loop
+        // Call threads
+        // Players do their turn (draw, discard, check win)
+        // If winning flag, stop threads
+        // Print winner and write files
     }
 
     public static int getNumPlayers(Scanner scanner) {

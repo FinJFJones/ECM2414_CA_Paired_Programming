@@ -25,7 +25,7 @@ public class Dealing {
     }
 
 
-    public static void dealHands(Queue<Card> pack,Player[] players){
+    public static void dealHands(Queue<Card> pack, Player[] players) {
         for (int i = 0; i < 4; i++) {
             for (Player player : players) {
                 Card card = pack.poll();
@@ -33,4 +33,13 @@ public class Dealing {
             }
         }
     };
+
+    public static void dealDecks(Queue<Card> pack, Queue<Card>[] decks) {
+        for (int i = 0; i < 4; i++) {
+            for (Queue<Card> deck : decks) {
+                Card card = pack.poll();
+                deck.add(card);
+            }
+        }
+    }
 }
