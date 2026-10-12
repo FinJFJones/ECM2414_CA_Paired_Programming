@@ -26,9 +26,7 @@ public class Dealing {
 
 
     public static void dealHands(Queue<Card> pack,Player[] players){
-        int n = players.length;
-        
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < 4; i++) {
             for (Player player : players) {
                 Card card = pack.poll();
                 player.deal(card);
