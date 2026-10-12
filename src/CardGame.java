@@ -4,27 +4,31 @@ import java.util.Scanner;
 
 public class CardGame {
     private volatile static Queue<Card> pack; // Change to read pack
-    volatile Player[] players;
-    volatile Queue<Card>[] decks;
+    private volatile static Player[] players;
+    private volatile static  Queue<Card>[] decks;
 
     volatile int winner = -1;
 
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            int numPlayers = getNumPlayers(scanner);
-            pack = getPack(scanner,numPlayers);
-        }
+        Scanner scanner = new Scanner(System.in);
+        int numPlayers = getNumPlayers(scanner);
+        pack = getPack(scanner,numPlayers);
+        scanner.close();
 
+        players = generatePlayers(numPlayers);
 
         // Ask for number players
             // players = num from asking
             // decks = num from asking
+
             // Distribute round-robin to player's hands
             // Distribute round-robin to decks
             // Pack is now empty
+
             // Check if someone's won
             // Don't start gameloop if yes
             // Start gameloop if no
+
             // Game loop
             // Call threads
             // Players do their turn (draw, discard, check win)
@@ -69,4 +73,13 @@ public class CardGame {
         
         return pack;
     }
+
+    public static Player[] generatePlayers(int n){
+        Player[] p = new Player[n];
+        for (int i = 0; i < n; i++) {
+            p[i] = new Player(i+1);
+        }
+        return p;
+    }
+
 }
