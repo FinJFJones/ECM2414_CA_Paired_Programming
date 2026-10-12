@@ -10,62 +10,63 @@ public class CardGame {
     volatile int winner = -1;
 
     public static void main(String[] args) {
-        int numPlayers = getNumPlayers();
-        pack = getPack(numPlayers);
+        try (Scanner scanner = new Scanner(System.in)) {
+            int numPlayers = getNumPlayers(scanner);
+            pack = getPack(scanner,numPlayers);
+        }
+
+
         // Ask for number players
-        // players = num from asking
-        // decks = num from asking
-
-        // Distribute round-robin to player's hands
-        // Distribute round-robin to decks
-        // Pack is now empty
-
-        // Check if someone's won
-        // Don't start gameloop if yes
-        // Start gameloop if no
-
-        // Game loop
-        // Call threads
-        // Players do their turn (draw, discard, check win)
-        // If winning flag, stop threads
-        // Print winner and write files
+            // players = num from asking
+            // decks = num from asking
+            // Distribute round-robin to player's hands
+            // Distribute round-robin to decks
+            // Pack is now empty
+            // Check if someone's won
+            // Don't start gameloop if yes
+            // Start gameloop if no
+            // Game loop
+            // Call threads
+            // Players do their turn (draw, discard, check win)
+            // If winning flag, stop threads
+            // Print winner and write files
     }
 
-    public static int getNumPlayers() {
+    public static int getNumPlayers(Scanner scanner) {
         int numPlayers = -1;
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (numPlayers < 1) {
-                
-                System.out.println("Please enter the number of players:");
-                String playersString = scanner.nextLine();
-                try {
-                    numPlayers = Integer.parseInt(playersString);
-                    
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid number of players.");
-                }
+        while (numPlayers < 1) {
+
+            System.out.println("Please enter the number of players:");
+            String playersString = scanner.nextLine();
+            try {
+                numPlayers = Integer.parseInt(playersString);
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number of players.");
             }
         }
+
         return numPlayers;
     }
 
-    public static Queue<Card> getPack(int n) {
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (pack == null) {
-                System.out.println("Please enter location of pack to load:");
-                String packPath = scanner.nextLine();
-                
-                try {
-                    pack = Utils.readPack(packPath);
-                } catch (FileNotFoundException e) {
-                    System.err.println(e);
+    public static Queue<Card> getPack(Scanner scanner, int n) {
+        while (pack == null) {
+            System.out.println("Please enter location of pack to load:");
+            String packPath = scanner.nextLine();
+
+            try {
+                pack = Utils.readPack(packPath);
+                if (pack.size() != 8 * n) {
+                pack = null;
+                System.out.println("Invalid pack size.");
                 }
-                
-                if (pack.size() != 8*n){
-                    pack = null;
-                }
+            } catch (FileNotFoundException | NumberFormatException e) {
+                System.err.println(e);
+            }   
+
+            
             }
-        }
+        
         return pack;
     }
 }
