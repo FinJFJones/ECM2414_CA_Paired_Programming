@@ -33,41 +33,39 @@ public class CardGame {
 
     public static int getNumPlayers() {
         int numPlayers = -1;
-        Scanner scanner = new Scanner(System.in);
-        while (numPlayers < 1) {
-
-            System.out.println("Please enter the number of players:");
-            String playersString = scanner.nextLine();
-            try {
-                numPlayers = Integer.parseInt(playersString);
-
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid number of players.");
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (numPlayers < 1) {
+                
+                System.out.println("Please enter the number of players:");
+                String playersString = scanner.nextLine();
+                try {
+                    numPlayers = Integer.parseInt(playersString);
+                    
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid number of players.");
+                }
             }
         }
-        scanner.close();
         return numPlayers;
     }
 
     public static Queue<Card> getPack(int n) {
-        Scanner scanner = new Scanner(System.in);
-
-        while (pack == null) {
-            System.out.println("Please enter location of pack to load:");
-            String packPath = scanner.nextLine();
-
-            try {
-                pack = Utils.readPack(packPath);
-            } catch (FileNotFoundException e) {
-                System.err.println(e);
-            }
-
-            if (pack.size() != 8*n){
-                pack = null;
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (pack == null) {
+                System.out.println("Please enter location of pack to load:");
+                String packPath = scanner.nextLine();
+                
+                try {
+                    pack = Utils.readPack(packPath);
+                } catch (FileNotFoundException e) {
+                    System.err.println(e);
+                }
+                
+                if (pack.size() != 8*n){
+                    pack = null;
+                }
             }
         }
-
-        scanner.close();
         return pack;
     }
 }
