@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class Utils {
+public class Dealing {
     public static Queue<Card> readPack(String path) throws FileNotFoundException, NumberFormatException {
         Queue<Card> pack = new LinkedList<>();
 
@@ -23,4 +23,16 @@ public class Utils {
         }
         return pack;
     }
+
+
+    public static void dealHands(Queue<Card> pack,Player[] players){
+        int n = players.length;
+        
+        for (int i = 0; i < n; i++) {
+            for (Player player : players) {
+                Card card = pack.poll();
+                player.deal(card);
+            }
+        }
+    };
 }

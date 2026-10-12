@@ -2,6 +2,7 @@ import java.io.FileNotFoundException;
 import java.util.Queue;
 import java.util.Scanner;
 
+
 public class CardGame {
     private volatile static Queue<Card> pack; // Change to read pack
     private volatile static Player[] players;
@@ -16,6 +17,9 @@ public class CardGame {
         scanner.close();
 
         players = generatePlayers(numPlayers);
+
+        Dealing.dealHands(pack, players);
+
 
         // Ask for number players
             // players = num from asking
@@ -59,7 +63,7 @@ public class CardGame {
             String packPath = scanner.nextLine();
 
             try {
-                pack = Utils.readPack(packPath);
+                pack = Dealing.readPack(packPath);
                 if (pack.size() != 8 * n) {
                 pack = null;
                 System.out.println("Invalid pack size.");
