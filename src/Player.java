@@ -36,7 +36,7 @@ public class Player extends Thread{
     @Override
     public void run() {
         while (!done) {
-            if (this.drawDeck.isEmpty()) {
+            if (!this.drawDeck.isEmpty()) {
                 Card cardDrawn = this.drawDeck.poll();
                 this.hand.add(cardDrawn);
 
