@@ -9,7 +9,7 @@ public class CardGame {
     private volatile static Player[] players;
     private volatile static Queue<Card>[] decks;
 
-    volatile int winner = -1;
+    volatile static int winner = -1;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -26,7 +26,13 @@ public class CardGame {
         Dealing.dealHands(pack, players);
         Dealing.dealDecks(pack, decks);
 
-        
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].hasWon()) {
+                winner = i+1;
+                System.out.println(winner);
+            }
+        }
+
 
         // Ask for number players
         // players = num from asking
