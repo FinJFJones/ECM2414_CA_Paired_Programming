@@ -9,7 +9,7 @@ public class CardGame {
     private volatile static Player[] players;
     private volatile static Queue<Card>[] decks;
 
-    volatile static int winner = -1;
+    public volatile static int winner;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -17,22 +17,34 @@ public class CardGame {
         pack = getPack(scanner,numPlayers);
         scanner.close();
 
-        players = generatePlayers(numPlayers);
         decks = new Queue[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
             decks[i] = new LinkedList<Card>();
         }
+        
+        players = generatePlayers(numPlayers);
+        
 
         Dealing.dealHands(pack, players);
         Dealing.dealDecks(pack, decks);
 
-        for (int i = 0; i < players.length; i++) {
-            if (players[i].hasWon()) {
-                winner = i+1;
-                System.out.println(winner);
+        winner = checkPlayersWon();
+
+        if (winner == -1) {
+            for (Player player: players) {
+                player.start();
             }
         }
 
+        while (winner == -1) {
+            
+        }
+
+        for (Player player: players) {
+            player.stopThread();
+        }
+        
+        System.out.println(winner);
 
         // Ask for number players
         // players = num from asking
@@ -94,9 +106,19 @@ public class CardGame {
     public static Player[] generatePlayers(int n){
         Player[] p = new Player[n];
         for (int i = 0; i < n; i++) {
-            p[i] = new Player(i+1);
+            p[i] = new Player(i+1, decks[i], decks[(i+1)%n]);
         }
         return p;
+    }
+
+    public static int checkPlayersWon() {
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].hasWon()) {
+                System.out.println(i+1);
+                return i+1;
+            }
+        }
+        return -1;
     }
 
 }
