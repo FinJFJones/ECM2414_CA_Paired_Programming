@@ -1,15 +1,18 @@
 import java.util.PriorityQueue;
-import java.util.Queue;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class Player extends Thread{
-    private volatile Queue<Card> drawDeck;
-    private volatile Queue<Card> discardDeck;
+    private volatile ConcurrentLinkedQueue<Card> drawDeck;
+    private volatile ConcurrentLinkedQueue<Card> discardDeck;
 
     private volatile boolean done = false;
     final private int Id;
     final private PriorityQueue<Card> hand;
 
-    public Player(int Id, Queue<Card> drawDeck, Queue<Card> discardDeck) {
+    public Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck) {
         this.Id = Id;
         this.hand = new PriorityQueue<>(
             (a, b) -> Boolean.compare(a.value == Id, b.value == Id)
@@ -43,8 +46,11 @@ public class Player extends Thread{
                 Card cardDiscarded = this.hand.poll();
                 this.discardDeck.add(cardDiscarded);
             }
-            if (this.hasWon()) {
-                CardGame.winner = this.Id;
+            if (CardGame.winner.get() != -1) {
+                this.stopThread();
+            }
+            else if (this.hasWon()) {
+                CardGame.winner.compareAndSet(-1, this.Id);
             }
         }
     }

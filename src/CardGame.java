@@ -1,25 +1,26 @@
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CardGame {
     private volatile static Queue<Card> pack; // Change to read pack
     private volatile static Player[] players;
-    private volatile static Queue<Card>[] decks;
+    private volatile static ConcurrentLinkedQueue<Card>[] decks;
 
-    public volatile static int winner;
+    public volatile static AtomicInteger winner;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
         int numPlayers = getNumPlayers(scanner);
         pack = getPack(scanner,numPlayers);
         scanner.close();
 
-        decks = new Queue[numPlayers];
+        decks = new ConcurrentLinkedQueue[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            decks[i] = new LinkedList<>();
+            decks[i] = new ConcurrentLinkedQueue<>();
         }
         
         players = generatePlayers(numPlayers);
@@ -30,18 +31,18 @@ public class CardGame {
 
         winner = checkPlayersWon();
 
-        if (winner == -1) {
+        if (winner.get() == -1) {
             for (Player player: players) {
                 player.start();
             }
         }
 
-        while (winner == -1) {
+        while (winner.get() == -1) {
             
         }
 
         for (Player player: players) {
-            player.stopThread();
+            player.join();
         }
         
         System.out.println(winner);
@@ -111,14 +112,14 @@ public class CardGame {
         return p;
     }
 
-    public static int checkPlayersWon() {
+    public static AtomicInteger checkPlayersWon() {
         for (int i = 0; i < players.length; i++) {
             if (players[i].hasWon()) {
                 System.out.println(i+1);
-                return i+1;
+                return new AtomicInteger(i+1);
             }
         }
-        return -1;
+        return new AtomicInteger(-1);
     }
 
 }

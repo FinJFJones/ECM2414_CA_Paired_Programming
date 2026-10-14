@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Dealing {
     public static Queue<Card> readPack(String path) throws FileNotFoundException, NumberFormatException {
@@ -34,9 +35,9 @@ public class Dealing {
         }
     };
 
-    public static void dealDecks(Queue<Card> pack, Queue<Card>[] decks) {
+    public static void dealDecks(Queue<Card> pack, ConcurrentLinkedQueue<Card>[] decks) {
         for (int i = 0; i < 4; i++) {
-            for (Queue<Card> deck : decks) {
+            for (ConcurrentLinkedQueue<Card> deck : decks) {
                 Card card = pack.poll();
                 deck.add(card);
             }
