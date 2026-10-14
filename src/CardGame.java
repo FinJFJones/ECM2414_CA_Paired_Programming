@@ -119,7 +119,7 @@ public class CardGame {
     private static AtomicInteger checkPlayersWon() {
         for (int i = 0; i < players.length; i++) {
             if (players[i].hasWon()) {
-                System.out.println(i+1);
+                System.out.println("player"+ (i+1) + " wins");
                 return new AtomicInteger(i+1);
             }
         }

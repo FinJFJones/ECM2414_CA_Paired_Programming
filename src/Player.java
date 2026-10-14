@@ -55,6 +55,42 @@ public class Player extends Thread{
         return handString;
     }
 
+    private void outputTurn(Card cardDrawn, Card cardDiscarded){
+        int playerId = this.getPlayerId();
+
+        String drawnText = "player " + playerId + " draws a " + cardDrawn.getValue() + " from deck " + playerId;
+        OutputHandler.writeToTextFile(this.getFilePath(),drawnText);
+
+        String discardText = "player " + playerId + " discard a " + cardDiscarded.getValue() + " from deck " + (playerId+1)%4;
+        OutputHandler.writeToTextFile(this.getFilePath(),discardText);
+
+        String handText = "player " + playerId + " current hand is" + this.showHand();
+        OutputHandler.writeToTextFile(this.getFilePath(),handText);
+    }
+
+    private void outputLossGame(){
+        int playerId = this.getPlayerId();
+        int winnerId = CardGame.winner.get();
+
+        String line1 = "player " + winnerId + " has informed player " + playerId + " that player " + winnerId + " has won";
+        String line2 = "player " + playerId + " exits";
+        String line3 = "player " + playerId + " hand:" + this.showHand();
+
+        String text = line1 + "\n" + line2 + "\n" + line3;
+        OutputHandler.writeToTextFile(this.getFilePath(), text);
+    }
+
+    private void outputWinGame(){
+        int playerId = this.getPlayerId();
+
+        String line1 = "player " + playerId + " wins";
+        String line2 = "player " + playerId + " exits";
+        String line3 = "player " + playerId + " final hand:" + this.showHand();
+
+        String text = line1 + "\n" + line2 + "\n" + line3;
+        OutputHandler.writeToTextFile(this.getFilePath(), text);
+    }
+
     @Override
     public void run() {
         while (!done) {
@@ -64,13 +100,18 @@ public class Player extends Thread{
 
                 Card cardDiscarded = this.hand.poll();
                 this.discardDeck.add(cardDiscarded);
+
+                this.outputTurn(cardDrawn,cardDiscarded);
             }
             if (CardGame.winner.get() != -1) {
                 this.stopThread();
+                this.outputLossGame();
             }
             else if (this.hasWon()) {
                 CardGame.winner.compareAndSet(-1, this.Id);
                 System.out.println("Player "+ this.Id +" wins");
+                this.stopThread();
+                this.outputWinGame();
             }
         }
     }
