@@ -3,6 +3,11 @@ import java.io.IOException;
 
 public class OutputHandler {
     public static void wipeDir(String path) {
+        File dir = new File(path);
+
+        for(File file: dir.listFiles()){
+            file.delete();
+        }
 
     }
 
