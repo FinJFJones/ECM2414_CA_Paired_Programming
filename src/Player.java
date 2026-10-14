@@ -49,6 +49,7 @@ public class Player extends Thread{
             }
             else if (this.hasWon()) {
                 CardGame.winner.compareAndSet(-1, this.Id);
+                System.out.println("Player "+ this.Id +" wins");
             }
         }
     }

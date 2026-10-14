@@ -37,14 +37,11 @@ public class CardGame {
         }
 
         while (winner.get() == -1) {
-            
         }
 
         for (Player player: players) {
             player.join();
         }
-        
-        System.out.println(winner);
         
         // Ask for number players                                   | Done
         // players = num from asking                                | Done
