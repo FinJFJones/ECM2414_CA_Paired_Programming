@@ -1,4 +1,1 @@
-src/Card.class
-src/CardGame.class
-src/Dealing.class
-src/Player.class
+src/*.class
