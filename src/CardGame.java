@@ -9,7 +9,7 @@ public class CardGame {
     private static Player[] players;
     private static ConcurrentLinkedQueue<Card>[] decks;
 
-    public volatile static AtomicInteger winner;
+    public final static AtomicInteger winner = new AtomicInteger(-1);
 
     public static void main(String[] args) throws InterruptedException {
         OutputHandler.wipeDir("outputs");
@@ -36,8 +36,6 @@ public class CardGame {
 
         Dealing.dealDecks(pack, decks);
 
-        winner = checkPlayersWon();
-
         if (winner.get() == -1) {
             for (Player player: players) {
                 player.start();
@@ -51,6 +49,8 @@ public class CardGame {
             player.join();
         }
         
+
+        System.out.println(winner);
         // Ask for number players                                   | Done
         // players = num from asking                                | Done
         // decks = num from asking                                  | Done
@@ -111,19 +111,8 @@ public class CardGame {
     private static Player[] generatePlayers(int n){
         Player[] p = new Player[n];
         for (int i = 0; i < n; i++) {
-            p[i] = new Player(i+1, decks[i], decks[(i+1)%n]);
+            p[i] = new Player(i+1, decks[i], decks[(i+1)%n], n);
         }
         return p;
     }
-
-    private static AtomicInteger checkPlayersWon() {
-        for (int i = 0; i < players.length; i++) {
-            if (players[i].hasWon()) {
-                System.out.println("player"+ (i+1) + " wins");
-                return new AtomicInteger(i+1);
-            }
-        }
-        return new AtomicInteger(-1);
-    }
-
 }

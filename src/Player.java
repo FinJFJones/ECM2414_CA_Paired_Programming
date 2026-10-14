@@ -8,11 +8,13 @@ public class Player extends Thread{
 
     private volatile boolean done = false;
     final private int Id;
+    final private int numPlayers;
     final private PriorityQueue<Card> hand;
     final private String filePath;
 
-    public Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck) {
+    public Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck, int numPlayers) {
         this.Id = Id;
+        this.numPlayers = numPlayers;
         this.hand = new PriorityQueue<>(
             (card1, card2) -> Boolean.compare(card1.getValue() == Id, card2.getValue() == Id)
         );
@@ -61,7 +63,7 @@ public class Player extends Thread{
         String drawnText = "player " + playerId + " draws a " + cardDrawn.getValue() + " from deck " + playerId;
         OutputHandler.writeToTextFile(this.getFilePath(),drawnText);
 
-        String discardText = "player " + playerId + " discards a " + cardDiscarded.getValue() + " from deck " + (playerId+1)%4;
+        String discardText = "player " + playerId + " discards a " + cardDiscarded.getValue() + " to deck " + ((playerId%this.numPlayers)+1);
         OutputHandler.writeToTextFile(this.getFilePath(),discardText);
 
         String handText = "player " + playerId + " current hand is" + this.showHand();
@@ -94,7 +96,20 @@ public class Player extends Thread{
     @Override
     public void run() {
         while (!done) {
-            if (!this.drawDeck.isEmpty()) {
+            if (CardGame.winner.get() != -1) {
+                this.stopThread();
+                this.outputLossGame();
+            }
+            else if (this.hasWon()) {
+                if (CardGame.winner.compareAndSet(-1, this.Id)) {
+                    System.out.println("Player "+ this.Id +" wins");
+                    this.outputWinGame();
+                } else {
+                    this.outputLossGame();
+                }
+                this.stopThread();
+            }
+            else if (!this.drawDeck.isEmpty()) {
                 Card cardDrawn = this.drawDeck.poll();
                 this.hand.add(cardDrawn);
 
@@ -102,16 +117,6 @@ public class Player extends Thread{
                 this.discardDeck.add(cardDiscarded);
 
                 this.outputTurn(cardDrawn,cardDiscarded);
-            }
-            if (CardGame.winner.get() != -1) {
-                this.stopThread();
-                this.outputLossGame();
-            }
-            else if (this.hasWon()) {
-                CardGame.winner.compareAndSet(-1, this.Id);
-                System.out.println("Player "+ this.Id +" wins");
-                this.stopThread();
-                this.outputWinGame();
             }
         }
     }
