@@ -1,14 +1,13 @@
 import java.io.FileNotFoundException;
 import java.util.Queue;
 import java.util.Scanner;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CardGame {
     private volatile static Queue<Card> pack; // Change to read pack
-    private volatile static Player[] players;
-    private volatile static ConcurrentLinkedQueue<Card>[] decks;
+    private static Player[] players;
+    private static ConcurrentLinkedQueue<Card>[] decks;
 
     public volatile static AtomicInteger winner;
 
@@ -66,7 +65,7 @@ public class CardGame {
         // Print winner and write files                             | Not done
     }
 
-    public static int getNumPlayers(Scanner scanner) {
+    private static int getNumPlayers(Scanner scanner) {
         int numPlayers = -1;
         while (numPlayers < 1) {
 
@@ -83,7 +82,7 @@ public class CardGame {
         return numPlayers;
     }
 
-    public static Queue<Card> getPack(Scanner scanner, int n) {
+    private static Queue<Card> getPack(Scanner scanner, int n) {
         while (pack == null) {
             System.out.println("Please enter location of pack to load:");
             String packPath = scanner.nextLine();
@@ -104,7 +103,7 @@ public class CardGame {
         return pack;
     }
 
-    public static Player[] generatePlayers(int n){
+    private static Player[] generatePlayers(int n){
         Player[] p = new Player[n];
         for (int i = 0; i < n; i++) {
             p[i] = new Player(i+1, decks[i], decks[(i+1)%n]);
@@ -112,7 +111,7 @@ public class CardGame {
         return p;
     }
 
-    public static AtomicInteger checkPlayersWon() {
+    private static AtomicInteger checkPlayersWon() {
         for (int i = 0; i < players.length; i++) {
             if (players[i].hasWon()) {
                 System.out.println(i+1);

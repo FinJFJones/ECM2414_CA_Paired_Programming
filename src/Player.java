@@ -1,7 +1,5 @@
 import java.util.PriorityQueue;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Player extends Thread{
@@ -15,7 +13,7 @@ public class Player extends Thread{
     public Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck) {
         this.Id = Id;
         this.hand = new PriorityQueue<>(
-            (a, b) -> Boolean.compare(a.value == Id, b.value == Id)
+            (card1, card2) -> Boolean.compare(card1.getValue() == Id, card2.getValue() == Id)
         );
 
         this.drawDeck = drawDeck;
@@ -29,7 +27,7 @@ public class Player extends Thread{
     public boolean hasWon() {
         Card firstCard = this.hand.peek();
         for (Card card: this.hand) {
-            if (card.value != firstCard.value) {
+            if (card.getValue() != firstCard.getValue()) {
                 return false;
             }
         }
