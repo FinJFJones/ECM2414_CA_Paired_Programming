@@ -43,4 +43,13 @@ public class Dealing {
             }
         }
     }
+
+    public static String showDeck(ConcurrentLinkedQueue<Card> deck) {
+        Card[] cards = deck.toArray(new Card[0]);
+        String deckString = "";
+        for (Card card : cards){
+            deckString += " "+card.getValue();
+        }
+        return deckString;
+    }
 }

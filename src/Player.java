@@ -61,13 +61,13 @@ public class Player extends Thread{
         int playerId = this.getPlayerId();
 
         String drawnText = "player " + playerId + " draws a " + cardDrawn.getValue() + " from deck " + playerId;
-        OutputHandler.writeToTextFile(this.getFilePath(),drawnText);
+        OutputHandler.writeToTextFile(this.getFilePath(),drawnText,true);
 
         String discardText = "player " + playerId + " discards a " + cardDiscarded.getValue() + " to deck " + ((playerId%this.numPlayers)+1);
-        OutputHandler.writeToTextFile(this.getFilePath(),discardText);
+        OutputHandler.writeToTextFile(this.getFilePath(),discardText,true);
 
         String handText = "player " + playerId + " current hand is" + this.showHand();
-        OutputHandler.writeToTextFile(this.getFilePath(),handText);
+        OutputHandler.writeToTextFile(this.getFilePath(),handText,true);
     }
 
     private void outputLossGame(){
@@ -79,7 +79,7 @@ public class Player extends Thread{
         String line3 = "player " + playerId + " hand:" + this.showHand();
 
         String text = line1 + "\n" + line2 + "\n" + line3;
-        OutputHandler.writeToTextFile(this.getFilePath(), text);
+        OutputHandler.writeToTextFile(this.getFilePath(), text,false);
     }
 
     private void outputWinGame(){
@@ -90,7 +90,7 @@ public class Player extends Thread{
         String line3 = "player " + playerId + " final hand:" + this.showHand();
 
         String text = line1 + "\n" + line2 + "\n" + line3;
-        OutputHandler.writeToTextFile(this.getFilePath(), text);
+        OutputHandler.writeToTextFile(this.getFilePath(), text,false);
     }
 
     @Override

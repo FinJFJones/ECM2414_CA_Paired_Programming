@@ -16,28 +16,27 @@ public class CardGame {
 
         Scanner scanner = new Scanner(System.in);
         int numPlayers = getNumPlayers(scanner);
-        pack = getPack(scanner,numPlayers);
+        pack = getPack(scanner, numPlayers);
         scanner.close();
 
         decks = new ConcurrentLinkedQueue[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
             decks[i] = new ConcurrentLinkedQueue<>();
         }
-        
+
         players = generatePlayers(numPlayers);
-        
 
         Dealing.dealHands(pack, players);
 
-        for (Player player : players){
+        for (Player player : players) {
             String text = "player " + player.getPlayerId() + " initial hand" + player.showHand();
-            OutputHandler.writeToTextFile(player.getFilePath(),text);
+            OutputHandler.writeToTextFile(player.getFilePath(), text, true);
         }
 
         Dealing.dealDecks(pack, decks);
 
         if (winner.get() == -1) {
-            for (Player player: players) {
+            for (Player player : players) {
                 player.start();
             }
         }
@@ -45,29 +44,17 @@ public class CardGame {
         while (winner.get() == -1) {
         }
 
-        for (Player player: players) {
+        for (Player player : players) {
             player.join();
         }
-        
 
-        System.out.println(winner);
-        // Ask for number players                                   | Done
-        // players = num from asking                                | Done
-        // decks = num from asking                                  | Done
-
-        // Distribute round-robin to player's hands                 | Done
-        // Distribute round-robin to decks                          | Done
-        // Pack is now empty                                        | Done
-
-        // Check if someone's won                                   | Done
-        // Don't start gameloop if yes                              | Done
-        // Start gameloop if no                                     | Done
-
-        // Game loop                                                | Done
-        // Call threads                                             | Done
-        // Players do their turn (draw, discard, check win)         | Done
-        // If winning flag, stop threads                            | Done
-        // Print winner and write files                             | Not done
+        for (int i = 0; i < decks.length; i++) {
+            String currentDeckPath = "outputs/deck" + (i + 1) + "_output.txt";
+            OutputHandler.createTextFile(currentDeckPath);
+            OutputHandler.writeToTextFile(currentDeckPath,
+                    "deck" + (i + 1) + " contents:" + Dealing.showDeck(decks[i]),
+                    false);
+        }
     }
 
     private static int getNumPlayers(Scanner scanner) {
@@ -95,23 +82,22 @@ public class CardGame {
             try {
                 pack = Dealing.readPack(packPath);
                 if (pack.size() != 8 * n) {
-                pack = null;
-                System.out.println("Invalid pack size.");
+                    pack = null;
+                    System.out.println("Invalid pack size.");
                 }
             } catch (FileNotFoundException | NumberFormatException e) {
                 System.err.println(e);
-            }   
-
-            
             }
-        
+
+        }
+
         return pack;
     }
 
-    private static Player[] generatePlayers(int n){
+    private static Player[] generatePlayers(int n) {
         Player[] p = new Player[n];
         for (int i = 0; i < n; i++) {
-            p[i] = new Player(i+1, decks[i], decks[(i+1)%n], n);
+            p[i] = new Player(i + 1, decks[i], decks[(i + 1) % n], n);
         }
         return p;
     }

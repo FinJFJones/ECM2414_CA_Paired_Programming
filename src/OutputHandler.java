@@ -24,9 +24,13 @@ public class OutputHandler {
         }
     }
 
-    public static void writeToTextFile(String path, String text) {
+    public static void writeToTextFile(String path, String text, boolean addNewLine) {
         try (FileWriter writer = new FileWriter(path,true)) {
-            writer.write(text+"\n");
+            if (addNewLine) {
+                text += "\n";
+            }
+            
+            writer.write(text);
         } catch (IOException e) {
             System.err.println(e);
         }
