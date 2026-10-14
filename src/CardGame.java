@@ -12,6 +12,8 @@ public class CardGame {
     public volatile static AtomicInteger winner;
 
     public static void main(String[] args) throws InterruptedException {
+        OutputHandler.wipeDir("outputs");
+
         Scanner scanner = new Scanner(System.in);
         int numPlayers = getNumPlayers(scanner);
         pack = getPack(scanner,numPlayers);
@@ -26,6 +28,12 @@ public class CardGame {
         
 
         Dealing.dealHands(pack, players);
+
+        for (Player player : players){
+            String text = "player " + player.getPlayerId() + " initial hand" + player.showHand();
+            OutputHandler.writeToTextFile(player.getFilePath(),text);
+        }
+
         Dealing.dealDecks(pack, decks);
 
         winner = checkPlayersWon();

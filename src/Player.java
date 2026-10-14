@@ -9,6 +9,7 @@ public class Player extends Thread{
     private volatile boolean done = false;
     final private int Id;
     final private PriorityQueue<Card> hand;
+    final private String filePath;
 
     public Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck) {
         this.Id = Id;
@@ -18,6 +19,9 @@ public class Player extends Thread{
 
         this.drawDeck = drawDeck;
         this.discardDeck = discardDeck;
+
+        this.filePath = "outputs/player" +this.Id + "_output.txt";
+        OutputHandler.createTextFile(filePath);
     }
 
     public void deal(Card card) {
@@ -32,6 +36,23 @@ public class Player extends Thread{
             }
         }
         return true;
+    }
+
+    public String getFilePath(){
+        return this.filePath;
+    }
+
+    public int getPlayerId(){
+        return this.Id;
+    }
+
+    public String showHand(){
+        Card[] cards = this.hand.toArray(new Card[0]);
+        String handString = "";
+        for (Card card : cards){
+            handString += " "+card.getValue();
+        }
+        return handString;
     }
 
     @Override

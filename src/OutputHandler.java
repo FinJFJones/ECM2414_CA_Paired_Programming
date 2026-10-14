@@ -15,17 +15,17 @@ public class OutputHandler {
         File textFile = new File(path);
         try {
             if (textFile.createNewFile()) {
-                System.out.println("File created: " + textFile.getName());
+                //System.out.println("File created: " + textFile.getName());
             } else {
-                System.out.println("File already exists: " + textFile.getName());
+                //System.out.println("File already exists: " + textFile.getName());
             }
         } catch (IOException e) {
             System.err.println(e);
         }
     }
 
-    public static void writeTextFile(String path, String text) {
-        try (FileWriter writer = new FileWriter(path)) {
+    public static void writeToTextFile(String path, String text) {
+        try (FileWriter writer = new FileWriter(path,true)) {
             writer.write(text);
         } catch (IOException e) {
             System.err.println(e);
