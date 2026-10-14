@@ -26,7 +26,7 @@ public class OutputHandler {
 
     public static void writeToTextFile(String path, String text) {
         try (FileWriter writer = new FileWriter(path,true)) {
-            writer.write(text);
+            writer.write(text+"\n");
         } catch (IOException e) {
             System.err.println(e);
         }

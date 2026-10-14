@@ -61,7 +61,7 @@ public class Player extends Thread{
         String drawnText = "player " + playerId + " draws a " + cardDrawn.getValue() + " from deck " + playerId;
         OutputHandler.writeToTextFile(this.getFilePath(),drawnText);
 
-        String discardText = "player " + playerId + " discard a " + cardDiscarded.getValue() + " from deck " + (playerId+1)%4;
+        String discardText = "player " + playerId + " discards a " + cardDiscarded.getValue() + " from deck " + (playerId+1)%4;
         OutputHandler.writeToTextFile(this.getFilePath(),discardText);
 
         String handText = "player " + playerId + " current hand is" + this.showHand();
