@@ -1,10 +1,12 @@
-package CardPlayingSimulation;
+package cardplayingsimulation;
 
 import java.io.FileNotFoundException;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+//TODO: implement random discard, handle file errors, handle readPack error
 
 public class CardGame {
     private static Queue<Card> pack;

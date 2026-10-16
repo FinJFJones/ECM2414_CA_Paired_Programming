@@ -1,4 +1,4 @@
-package CardPlayingSimulation;
+package cardplayingsimulation;
 
 import java.io.File;
 import java.io.FileNotFoundException;

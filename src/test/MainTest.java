@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 
 import org.junit.jupiter.api.Test;
 
-import CardPlayingSimulation.CardGame;
+import cardplayingsimulation.CardGame;
 
 public class MainTest {
     @Test 

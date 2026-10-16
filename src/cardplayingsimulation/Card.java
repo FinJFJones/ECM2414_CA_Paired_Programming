@@ -1,4 +1,4 @@
-package CardPlayingSimulation;
+package cardplayingsimulation;
 
 class Card {
     final private int value;
