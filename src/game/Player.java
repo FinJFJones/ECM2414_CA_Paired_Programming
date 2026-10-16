@@ -1,3 +1,5 @@
+package game;
+
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 

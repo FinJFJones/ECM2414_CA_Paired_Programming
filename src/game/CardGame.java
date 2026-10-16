@@ -1,3 +1,5 @@
+package game;
+
 import java.io.FileNotFoundException;
 import java.util.Queue;
 import java.util.Scanner;

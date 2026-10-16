@@ -1,3 +1,5 @@
+package game;
+
 public class Card {
     final private int value;
 
