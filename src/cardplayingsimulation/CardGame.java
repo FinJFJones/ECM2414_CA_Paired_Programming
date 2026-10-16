@@ -38,6 +38,8 @@ public class CardGame {
         }
 
         Dealing.dealDecks(pack, decks);
+        
+        winner.set(-1);
 
         for (Player player : players) {
             player.start();
@@ -78,6 +80,7 @@ public class CardGame {
     }
 
     private static Queue<Card> getPack(Scanner scanner, int n) {
+        pack = null;
         while (pack == null) {
             System.out.println("Please enter location of pack to load:");
             String packPath = scanner.nextLine();
