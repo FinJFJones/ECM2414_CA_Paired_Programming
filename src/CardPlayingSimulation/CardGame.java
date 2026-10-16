@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CardGame {
-    private static Queue<Card> pack; // Change to read pack
+    private static Queue<Card> pack;
     private static Player[] players;
     private static ConcurrentLinkedQueue<Card>[] decks;
 
