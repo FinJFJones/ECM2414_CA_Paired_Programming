@@ -37,11 +37,10 @@ public class CardGame {
 
         Dealing.dealDecks(pack, decks);
 
-        if (winner.get() == -1) {
-            for (Player player : players) {
-                player.start();
-            }
+        for (Player player : players) {
+            player.start();
         }
+
 
         while (winner.get() == -1) {
         }
