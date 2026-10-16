@@ -1,4 +1,4 @@
-package game;
+package CardPlayingSimulation;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,8 +7,8 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Dealing {
-    public static Queue<Card> readPack(String path) throws FileNotFoundException, NumberFormatException {
+class Dealing {
+    static Queue<Card> readPack(String path) throws FileNotFoundException, NumberFormatException {
         Queue<Card> pack = new LinkedList<>();
 
         try (Scanner scanner = new Scanner(new File(path))) {
@@ -28,7 +28,7 @@ public class Dealing {
     }
 
 
-    public static void dealHands(Queue<Card> pack, Player[] players) {
+    static void dealHands(Queue<Card> pack, Player[] players) {
         for (int i = 0; i < 4; i++) {
             for (Player player : players) {
                 Card card = pack.poll();
@@ -37,7 +37,7 @@ public class Dealing {
         }
     };
 
-    public static void dealDecks(Queue<Card> pack, ConcurrentLinkedQueue<Card>[] decks) {
+    static void dealDecks(Queue<Card> pack, ConcurrentLinkedQueue<Card>[] decks) {
         for (int i = 0; i < 4; i++) {
             for (ConcurrentLinkedQueue<Card> deck : decks) {
                 Card card = pack.poll();
@@ -46,7 +46,7 @@ public class Dealing {
         }
     }
 
-    public static String showDeck(ConcurrentLinkedQueue<Card> deck) {
+    static String showDeck(ConcurrentLinkedQueue<Card> deck) {
         Card[] cards = deck.toArray(new Card[0]);
         String deckString = "";
         for (Card card : cards){

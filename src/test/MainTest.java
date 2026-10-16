@@ -3,7 +3,8 @@ package test;
 import java.io.ByteArrayInputStream;
 
 import org.junit.jupiter.api.Test;
-import game.CardGame;
+
+import CardPlayingSimulation.CardGame;
 
 public class MainTest {
     @Test 

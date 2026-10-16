@@ -1,11 +1,11 @@
-package game;
+package CardPlayingSimulation;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class OutputHandler {
-    public static void wipeDir(String path) {
+class OutputHandler {
+    static void wipeDir(String path) {
         File dir = new File(path);
 
         for (File file : dir.listFiles()) {
@@ -13,7 +13,7 @@ public class OutputHandler {
         }
     }
 
-    public static void createTextFile(String path) {
+    static void createTextFile(String path) {
         File textFile = new File(path);
         try {
             if (textFile.createNewFile()) {
@@ -26,7 +26,7 @@ public class OutputHandler {
         }
     }
 
-    public static void writeToTextFile(String path, String text, boolean addNewLine) {
+    static void writeToTextFile(String path, String text, boolean addNewLine) {
         try (FileWriter writer = new FileWriter(path,true)) {
             if (addNewLine) {
                 text += "\n";

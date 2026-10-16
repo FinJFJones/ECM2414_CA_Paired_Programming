@@ -1,13 +1,13 @@
-package game;
+package CardPlayingSimulation;
 
-public class Card {
+class Card {
     final private int value;
 
-    public Card(int value) {
+    Card(int value) {
         this.value = value;
     }
 
-    public int getValue(){
+    int getValue(){
         return this.value;
     }
 }

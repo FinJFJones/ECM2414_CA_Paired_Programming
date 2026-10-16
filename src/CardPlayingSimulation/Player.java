@@ -1,10 +1,10 @@
-package game;
+package CardPlayingSimulation;
 
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-public class Player extends Thread{
+class Player extends Thread{
     private volatile ConcurrentLinkedQueue<Card> drawDeck;
     private volatile ConcurrentLinkedQueue<Card> discardDeck;
 
@@ -14,7 +14,7 @@ public class Player extends Thread{
     final private PriorityQueue<Card> hand;
     final private String filePath;
 
-    public Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck, int numPlayers) {
+    Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck, int numPlayers) {
         this.Id = Id;
         this.numPlayers = numPlayers;
         this.hand = new PriorityQueue<>(
@@ -28,11 +28,11 @@ public class Player extends Thread{
         OutputHandler.createTextFile(filePath);
     }
 
-    public void deal(Card card) {
+    void deal(Card card) {
         this.hand.add(card);
     }
 
-    public boolean hasWon() {
+    boolean hasWon() {
         Card firstCard = this.hand.peek();
         for (Card card: this.hand) {
             if (card.getValue() != firstCard.getValue()) {
@@ -42,15 +42,15 @@ public class Player extends Thread{
         return true;
     }
 
-    public String getFilePath(){
+    String getFilePath(){
         return this.filePath;
     }
 
-    public int getPlayerId(){
+    int getPlayerId(){
         return this.Id;
     }
 
-    public String showHand(){
+    String showHand(){
         Card[] cards = this.hand.toArray(new Card[0]);
         String handString = "";
         for (Card card : cards){
@@ -123,7 +123,7 @@ public class Player extends Thread{
         }
     }
 
-    public void stopThread() {
+    void stopThread() {
         done = true;
     }
 }

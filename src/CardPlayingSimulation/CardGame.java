@@ -1,4 +1,4 @@
-package game;
+package CardPlayingSimulation;
 
 import java.io.FileNotFoundException;
 import java.util.Queue;
@@ -11,7 +11,7 @@ public class CardGame {
     private static Player[] players;
     private static ConcurrentLinkedQueue<Card>[] decks;
 
-    public final static AtomicInteger winner = new AtomicInteger(-1);
+    final static AtomicInteger winner = new AtomicInteger(-1);
 
     public static void main(String[] args) throws InterruptedException {
         OutputHandler.wipeDir("outputs");
