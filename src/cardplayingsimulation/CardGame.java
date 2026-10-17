@@ -39,12 +39,11 @@ public class CardGame {
 
         Dealing.dealDecks(pack, decks);
         
-        winner.set(-1);
+        winner.set(checkPlayersWon());
 
         for (Player player : players) {
             player.start();
         }
-
 
         while (winner.get() == -1) {
         }
@@ -106,5 +105,14 @@ public class CardGame {
             p[i] = new Player(i + 1, decks[i], decks[(i + 1) % n], n);
         }
         return p;
+    }
+
+    public static int checkPlayersWon() {
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].hasWon()) {
+                return i+1;
+            }
+        }
+        return -1;
     }
 }
