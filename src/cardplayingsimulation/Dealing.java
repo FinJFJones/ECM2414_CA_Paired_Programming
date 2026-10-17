@@ -32,7 +32,7 @@ class Dealing {
         for (int i = 0; i < 4; i++) {
             for (Player player : players) {
                 Card card = pack.poll();
-                player.deal(card);
+                player.deal(card,i);
             }
         }
     };

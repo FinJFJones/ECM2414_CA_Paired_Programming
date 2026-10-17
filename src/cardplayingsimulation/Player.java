@@ -1,40 +1,40 @@
 package cardplayingsimulation;
 
-import java.util.PriorityQueue;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Stream;
 
-
-class Player extends Thread{
+class Player extends Thread {
     private volatile ConcurrentLinkedQueue<Card> drawDeck;
     private volatile ConcurrentLinkedQueue<Card> discardDeck;
 
     private volatile boolean done = false;
     final private int Id;
     final private int numPlayers;
-    final private PriorityQueue<Card> hand;
+    final private Card[] hand;
     final private String filePath;
 
     Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck, int numPlayers) {
         this.Id = Id;
         this.numPlayers = numPlayers;
-        this.hand = new PriorityQueue<>(
-            (card1, card2) -> Boolean.compare(card1.getValue() == Id, card2.getValue() == Id)
-        );
 
         this.drawDeck = drawDeck;
         this.discardDeck = discardDeck;
 
-        this.filePath = "outputs/player" +this.Id + "_output.txt";
+        this.hand = new Card[4];
+
+        this.filePath = "outputs/player" + this.Id + "_output.txt";
         OutputHandler.createTextFile(filePath);
     }
 
-    void deal(Card card) {
-        this.hand.add(card);
+    void deal(Card card, int index) {
+        this.hand[index] = card;
     }
 
     boolean hasWon() {
-        Card firstCard = this.hand.peek();
-        for (Card card: this.hand) {
+        Card firstCard = this.hand[0];
+        for (Card card : this.hand) {
             if (card.getValue() != firstCard.getValue()) {
                 return false;
             }
@@ -42,49 +42,50 @@ class Player extends Thread{
         return true;
     }
 
-    String getFilePath(){
+    String getFilePath() {
         return this.filePath;
     }
 
-    int getPlayerId(){
+    int getPlayerId() {
         return this.Id;
     }
 
-    String showHand(){
-        Card[] cards = this.hand.toArray(new Card[0]);
+    String showHand() {
         String handString = "";
-        for (Card card : cards){
-            handString += " "+card.getValue();
+        for (Card card : this.hand) {
+            handString += " " + card.getValue();
         }
         return handString;
     }
 
-    private void outputTurn(Card cardDrawn, Card cardDiscarded){
+    private void outputTurn(Card cardDrawn, Card cardDiscarded) {
         int playerId = this.getPlayerId();
 
         String drawnText = "player " + playerId + " draws a " + cardDrawn.getValue() + " from deck " + playerId;
-        OutputHandler.writeToTextFile(this.getFilePath(),drawnText,true);
+        OutputHandler.writeToTextFile(this.getFilePath(), drawnText, true);
 
-        String discardText = "player " + playerId + " discards a " + cardDiscarded.getValue() + " to deck " + ((playerId%this.numPlayers)+1);
-        OutputHandler.writeToTextFile(this.getFilePath(),discardText,true);
+        String discardText = "player " + playerId + " discards a " + cardDiscarded.getValue() + " to deck "
+                + ((playerId % this.numPlayers) + 1);
+        OutputHandler.writeToTextFile(this.getFilePath(), discardText, true);
 
         String handText = "player " + playerId + " current hand is" + this.showHand();
-        OutputHandler.writeToTextFile(this.getFilePath(),handText,true);
+        OutputHandler.writeToTextFile(this.getFilePath(), handText, true);
     }
 
-    private void outputLossGame(){
+    private void outputLossGame() {
         int playerId = this.getPlayerId();
         int winnerId = CardGame.winner.get();
 
-        String line1 = "player " + winnerId + " has informed player " + playerId + " that player " + winnerId + " has won";
+        String line1 = "player " + winnerId + " has informed player " + playerId + " that player " + winnerId
+                + " has won";
         String line2 = "player " + playerId + " exits";
         String line3 = "player " + playerId + " hand:" + this.showHand();
 
         String text = line1 + "\n" + line2 + "\n" + line3;
-        OutputHandler.writeToTextFile(this.getFilePath(), text,false);
+        OutputHandler.writeToTextFile(this.getFilePath(), text, false);
     }
 
-    private void outputWinGame(){
+    private void outputWinGame() {
         int playerId = this.getPlayerId();
 
         String line1 = "player " + playerId + " wins";
@@ -92,7 +93,7 @@ class Player extends Thread{
         String line3 = "player " + playerId + " final hand:" + this.showHand();
 
         String text = line1 + "\n" + line2 + "\n" + line3;
-        OutputHandler.writeToTextFile(this.getFilePath(), text,false);
+        OutputHandler.writeToTextFile(this.getFilePath(), text, false);
     }
 
     @Override
@@ -101,24 +102,32 @@ class Player extends Thread{
             if (CardGame.winner.get() != -1) {
                 this.stopThread();
                 this.outputLossGame();
-            }
-            else if (this.hasWon()) {
+            } else if (this.hasWon()) {
                 if (CardGame.winner.compareAndSet(-1, this.Id)) {
-                    System.out.println("Player "+ this.Id +" wins");
+                    System.out.println("Player " + this.Id + " wins");
                     this.outputWinGame();
                 } else {
                     this.outputLossGame();
                 }
                 this.stopThread();
-            }
-            else if (!this.drawDeck.isEmpty()) {
+            } else if (!this.drawDeck.isEmpty()) {
                 Card cardDrawn = this.drawDeck.poll();
-                this.hand.add(cardDrawn);
+                
+                Stream<Card> stream = Stream.of(this.hand);
 
-                Card cardDiscarded = this.hand.poll();
-                this.discardDeck.add(cardDiscarded);
+                List<Card> discardCandidates = stream.filter(
+                    card -> card.getValue() != getPlayerId()
+                ).toList();
 
-                this.outputTurn(cardDrawn,cardDiscarded);
+                int i = ThreadLocalRandom.current().nextInt(discardCandidates.size());
+
+                Card cardDiscarded = discardCandidates.get(i);
+                this.hand[i] = cardDrawn;
+
+                discardDeck.add(cardDiscarded);
+
+                outputTurn(cardDrawn,cardDiscarded);
+
             }
         }
     }

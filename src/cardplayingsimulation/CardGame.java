@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//TODO: implement random discard, handle file errors, handle readPack error
+//TODO: implement random discard, handle file errors
 
 public class CardGame {
     private static Queue<Card> pack;
