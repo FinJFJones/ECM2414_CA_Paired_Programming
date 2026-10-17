@@ -1,7 +1,6 @@
 package cardplayingsimulation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
@@ -129,7 +128,6 @@ class Player extends Thread {
                 Card cardDiscarded = this.hand[discIndex];
 
                 this.hand[discIndex] = cardDrawn;
-                System.out.println(Arrays.toString(this.hand));
 
                 discardDeck.add(cardDiscarded);
 
