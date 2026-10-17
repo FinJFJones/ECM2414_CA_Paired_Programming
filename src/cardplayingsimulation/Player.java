@@ -1,9 +1,10 @@
 package cardplayingsimulation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
 
 class Player extends Thread {
     private volatile ConcurrentLinkedQueue<Card> drawDeck;
@@ -113,17 +114,22 @@ class Player extends Thread {
                 this.stopThread();
             } else if (!this.drawDeck.isEmpty()) {
                 Card cardDrawn = this.drawDeck.poll();
+
+                List<Integer> discardIndexs = new ArrayList<>();
+
+                for (int i=0 ; i<this.hand.length ; i++){
+                    Card card = this.hand[i];
+                    if (card.getValue() != this.getPlayerId()){
+                        discardIndexs.add(i);
+                    }
+                }
                 
-                Stream<Card> stream = Stream.of(this.hand);
+                int randNum = ThreadLocalRandom.current().nextInt(discardIndexs.size());
+                int discIndex = discardIndexs.get(randNum);
+                Card cardDiscarded = this.hand[discIndex];
 
-                List<Card> discardCandidates = stream.filter(
-                    card -> card.getValue() != getPlayerId()
-                ).toList();
-
-                int i = ThreadLocalRandom.current().nextInt(discardCandidates.size());
-
-                Card cardDiscarded = discardCandidates.get(i);
-                this.hand[i] = cardDrawn;
+                this.hand[discIndex] = cardDrawn;
+                System.out.println(Arrays.toString(this.hand));
 
                 discardDeck.add(cardDiscarded);
 
