@@ -1,17 +1,17 @@
 package cardplayingsimulation;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//TODO: implement random discard, handle file errors
-
 public class CardGame {
     private static Queue<Card> pack;
     private static Player[] players;
-    private static ConcurrentLinkedQueue<Card>[] decks;
+    private static List<ConcurrentLinkedQueue<Card>> decks;
 
     final static AtomicInteger winner = new AtomicInteger(-1);
 
@@ -23,9 +23,9 @@ public class CardGame {
         pack = getPack(scanner, numPlayers);
         scanner.close();
 
-        decks = new ConcurrentLinkedQueue[numPlayers];
+        decks = new ArrayList<>(numPlayers);
         for (int i = 0; i < numPlayers; i++) {
-            decks[i] = new ConcurrentLinkedQueue<>();
+            decks.add( new ConcurrentLinkedQueue<>() );
         }
 
         players = generatePlayers(numPlayers);
@@ -52,11 +52,11 @@ public class CardGame {
             player.join();
         }
 
-        for (int i = 0; i < decks.length; i++) {
+        for (int i = 0; i < decks.size(); i++) {
             String currentDeckPath = "outputs/deck" + (i + 1) + "_output.txt";
             OutputHandler.createTextFile(currentDeckPath);
             OutputHandler.writeToTextFile(currentDeckPath,
-                    "deck" + (i + 1) + " contents:" + Dealing.showDeck(decks[i]),
+                    "deck" + (i + 1) + " contents:" + Dealing.showDeck(decks.get(i)),
                     false);
         }
     }
@@ -102,7 +102,7 @@ public class CardGame {
     private static Player[] generatePlayers(int n) {
         Player[] p = new Player[n];
         for (int i = 0; i < n; i++) {
-            p[i] = new Player(i + 1, decks[i], decks[(i + 1) % n], n);
+            p[i] = new Player(i + 1, decks.get(i), decks.get((i + 1) % n), n);
         }
         return p;
     }

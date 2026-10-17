@@ -3,6 +3,7 @@ package cardplayingsimulation;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -37,7 +38,7 @@ class Dealing {
         }
     };
 
-    static void dealDecks(Queue<Card> pack, ConcurrentLinkedQueue<Card>[] decks) {
+    static void dealDecks(Queue<Card> pack, List<ConcurrentLinkedQueue<Card>> decks) {
         for (int i = 0; i < 4; i++) {
             for (ConcurrentLinkedQueue<Card> deck : decks) {
                 Card card = pack.poll();

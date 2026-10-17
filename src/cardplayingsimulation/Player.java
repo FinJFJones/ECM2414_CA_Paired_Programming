@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
 class Player extends Thread {
-    private volatile ConcurrentLinkedQueue<Card> drawDeck;
-    private volatile ConcurrentLinkedQueue<Card> discardDeck;
+    private final ConcurrentLinkedQueue<Card> drawDeck;
+    private final ConcurrentLinkedQueue<Card> discardDeck;
 
     private volatile boolean done = false;
     final private int Id;
