@@ -1,6 +1,6 @@
 package cardplayingsimulation;
 
-class Card {
+final class Card {
     final private int value;
 
     Card(int value) {
