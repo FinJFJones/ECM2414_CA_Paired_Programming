@@ -96,6 +96,20 @@ class Player extends Thread {
         OutputHandler.writeToTextFile(this.getFilePath(), text, false);
     }
 
+    private void atomicDrawDiscard(int i){
+        synchronized (this.drawDeck) {
+            synchronized (this.discardDeck) {
+                Card cardDrawn = this.drawDeck.poll();
+                Card cardDiscarded = this.hand[i];
+                this.hand[i] = cardDrawn;
+
+                discardDeck.add(cardDiscarded);
+
+                outputTurn(cardDrawn,cardDiscarded);
+            }
+        }
+    }
+
     @Override
     public void run() {
         while (!done) {
@@ -111,9 +125,7 @@ class Player extends Thread {
                     this.outputLossGame();
                 }
                 this.stopThread();
-            } else if (!this.drawDeck.isEmpty()) {
-                Card cardDrawn = this.drawDeck.poll();
-
+            } else {
                 List<Integer> discardIndexs = new ArrayList<>();
 
                 for (int i=0 ; i<this.hand.length ; i++){
@@ -125,14 +137,8 @@ class Player extends Thread {
                 
                 int randNum = ThreadLocalRandom.current().nextInt(discardIndexs.size());
                 int discIndex = discardIndexs.get(randNum);
-                Card cardDiscarded = this.hand[discIndex];
 
-                this.hand[discIndex] = cardDrawn;
-
-                discardDeck.add(cardDiscarded);
-
-                outputTurn(cardDrawn,cardDiscarded);
-
+                this.atomicDrawDiscard(discIndex);
             }
         }
     }
