@@ -9,6 +9,9 @@ class Player extends Thread {
     private final ConcurrentLinkedQueue<Card> drawDeck;
     private final ConcurrentLinkedQueue<Card> discardDeck;
 
+    private final ConcurrentLinkedQueue<Card> firstLock;
+    private final ConcurrentLinkedQueue<Card> secondLock;
+
     private volatile boolean done = false;
     final private int Id;
     final private int numPlayers;
@@ -26,6 +29,14 @@ class Player extends Thread {
 
         this.filePath = "outputs/player" + this.Id + "_output.txt";
         OutputHandler.createTextFile(filePath);
+
+        if(Id%numPlayers == 0){
+            firstLock = discardDeck;
+            secondLock = drawDeck;
+        } else {
+            firstLock = drawDeck;
+            secondLock = discardDeck;
+        }
     }
 
     void deal(Card card, int index) {
@@ -97,16 +108,23 @@ class Player extends Thread {
     }
 
     private void atomicDrawDiscard(int i){
-        synchronized (this.drawDeck) {
-            synchronized (this.discardDeck) {
-                Card cardDrawn = this.drawDeck.poll();
-                Card cardDiscarded = this.hand[i];
-                this.hand[i] = cardDrawn;
+        Card cardDrawn;
+        Card cardDiscarded;
+        Boolean successfulTurn = false;
 
-                discardDeck.add(cardDiscarded);
-
-                outputTurn(cardDrawn,cardDiscarded);
+        synchronized (this.firstLock) {
+            synchronized (this.secondLock) {
+                cardDrawn = this.drawDeck.poll();
+                cardDiscarded = this.hand[i];
+                if (cardDrawn != null){
+                    this.hand[i] = cardDrawn;
+                    discardDeck.add(cardDiscarded);
+                    successfulTurn = true;
+                }    
             }
+        }
+        if (successfulTurn){
+            outputTurn(cardDrawn, cardDiscarded);
         }
     }
 
