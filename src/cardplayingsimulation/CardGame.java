@@ -1,5 +1,6 @@
 package cardplayingsimulation;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ public class CardGame {
     final static AtomicInteger winner = new AtomicInteger(-1);
 
     public static void main(String[] args) throws InterruptedException {
+        File outputsDir = new File("outputs");
+        outputsDir.mkdir();
         OutputHandler.wipeDir("outputs");
 
         Scanner scanner = new Scanner(System.in);
