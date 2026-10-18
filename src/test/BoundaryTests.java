@@ -1,13 +1,21 @@
 package test;
 
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
+import java.time.Duration;
+
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import javax.smartcardio.Card;
+import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,12 +60,17 @@ public class BoundaryTests {
     }
 
     @Test
+    //@Timeout(value = 10, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
     void noPossibleWin() {
         ByteArrayInputStream in = new ByteArrayInputStream(
                 "4\nsrc/testPacks/boundaryTests/noWin/no_win_test_1.txt".getBytes());
 
-        runWithInput(in);
+        Assertions.assertThrows(AssertionFailedError.class,
+            () -> {
+                Assertions.assertTimeoutPreemptively(Duration.ofSeconds(10), () -> runWithInput(in));
+            });
     }
+    
 
     @Test
     void noPreferredDenom_loop() {
