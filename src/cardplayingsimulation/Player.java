@@ -5,7 +5,15 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Thread-safe Player class.
+ * @author Thomas Russell and Finley Jones.
+ */
+
 class Player extends Thread {
+    /**
+     * Player class extends Thread, overridden run method for drawing/discarding.
+     */
     private final ConcurrentLinkedQueue<Card> drawDeck;
     private final ConcurrentLinkedQueue<Card> discardDeck;
 
@@ -18,6 +26,12 @@ class Player extends Thread {
     final private Card[] hand;
     final private String filePath;
 
+    /**
+         * Player constructor.
+         * @param Id int, player's ID 1 -> n.
+         * @param drawDeck ConcurrentLinkedQueue<Card>, deck to be drawn from.
+         * @param discardDeck ConcurrentLinkedQueue<Card>, deck to discard to.
+         */
     Player(int Id, ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck, int numPlayers) {
         this.Id = Id;
         this.numPlayers = numPlayers;
@@ -39,11 +53,18 @@ class Player extends Thread {
             secondLock = discardDeck;
         }
     }
-
+    /**
+     * Deal card to hand.
+     * @param card Card, the card to be added to the hand.
+     * @param index int, index of the hand to add the card.
+     */
     void deal(Card card, int index) {
         this.hand[index] = card;
     }
-
+    /**
+     * Checks if the player has won by evaluating all cards in hand.
+     * @return boolean - true if player has won, false otherwise.
+     */
     boolean hasWon() {
         Card firstCard = this.hand[0];
         for (Card card : this.hand) {
@@ -53,15 +74,24 @@ class Player extends Thread {
         }
         return true;
     }
-
+    /**
+     * Gets the filepath to where the player should write their outputs. 
+     * @return String, the filepath.
+     */
     String getFilePath() {
         return this.filePath;
     }
-
+    /**
+     * Gets the player's Id.
+     * @return int, the Id.
+     */
     int getPlayerId() {
         return this.Id;
     }
-
+    /**
+     * Gets the player's hand as a string in the format required by the specification.
+     * @return String, the player's hand as a string.
+     */
     String showHand() {
         String handString = "";
         for (Card card : this.hand) {
@@ -69,7 +99,11 @@ class Player extends Thread {
         }
         return handString;
     }
-
+    /**
+     * Outputs the result of a draw/discard cycle to the player's output file.
+     * @param cardDrawn Card, the card that was drawn this cycle.
+     * @param cardDiscarded Card, the card that was discarded this cycle.
+     */
     private void outputTurn(Card cardDrawn, Card cardDiscarded) {
         int playerId = this.getPlayerId();
 
@@ -83,7 +117,9 @@ class Player extends Thread {
         String handText = "player " + playerId + " current hand is" + this.showHand();
         OutputHandler.writeToTextFile(this.getFilePath(), handText, true);
     }
-
+    /**
+     * Final write to output file for if the player has lost the game.
+     */
     private void outputLossGame() {
         int playerId = this.getPlayerId();
         int winnerId = CardGame.winner.get();
@@ -96,7 +132,9 @@ class Player extends Thread {
         String text = line1 + "\n" + line2 + "\n" + line3;
         OutputHandler.writeToTextFile(this.getFilePath(), text, false);
     }
-
+    /**
+     * Final write to output file for if the player has won the game.
+     */
     private void outputWinGame() {
         int playerId = this.getPlayerId();
 
@@ -108,6 +146,10 @@ class Player extends Thread {
         OutputHandler.writeToTextFile(this.getFilePath(), text, false);
     }
 
+    /**
+     * Atomically draws and discards from/to hand by locking decks.
+     * @param i int, the index of the card to be discarded and replaced.
+     */
     private void atomicDrawDiscard(int i){
         Card cardDrawn;
         Card cardDiscarded;
@@ -129,6 +171,10 @@ class Player extends Thread {
         }
     }
 
+    /**    
+     * Overrides Thread.run to play the player's draw/discard cycle and check if won or lost game.
+     * @see java.lang.Thread#run()
+     */
     @Override
     public void run() {
         while (!done) {
@@ -162,6 +208,9 @@ class Player extends Thread {
         }
     }
 
+    /**
+     * Changes the done flag used within the thread to true.
+     */
     void stopThread() {
         done = true;
     }

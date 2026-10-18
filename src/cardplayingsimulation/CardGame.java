@@ -8,6 +8,10 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+/**
+ * Provides the main static method to play the simulation.
+ * @author Thomas Russell and Finley Jones.
+ */
 
 public class CardGame {
     private static Queue<Card> pack;
@@ -16,6 +20,11 @@ public class CardGame {
 
     final static AtomicInteger winner = new AtomicInteger(-1);
 
+    /**
+     * The main static method to play the simulation.
+     * @param args String, CLI input.
+     * @throws InterruptedException if threads are interrupted before they finish whilst waiting for join().
+     */
     public static void main(String[] args) throws InterruptedException {
         String cwd = System.getProperty("user.dir");
         File outputsDir = new File(cwd+"/outputs");
@@ -50,6 +59,7 @@ public class CardGame {
         }
 
         while (winner.get() == -1) {
+            
         }
 
         for (Player player : players) {
@@ -65,6 +75,11 @@ public class CardGame {
         }
     }
 
+    /**
+     * Gets and validates the number of players to play the game from CLI input.
+     * @param scanner Scanner, the scanner to use for getting CLI input.
+     * @return int, the number of players.
+     */
     private static int getNumPlayers(Scanner scanner) {
         int numPlayers = -1;
         while (numPlayers < 1) {
@@ -81,7 +96,12 @@ public class CardGame {
 
         return numPlayers;
     }
-
+    /**
+     * Gets and validates the input pack.
+     * @param scanner Scanner, the scanner to use for getting CLI input.
+     * @param n int, the number of players.
+     * @return Queue<Card>, the pack of cards.
+     */
     private static Queue<Card> getPack(Scanner scanner, int n) {
         pack = null;
         while (pack == null) {
@@ -102,7 +122,11 @@ public class CardGame {
 
         return pack;
     }
-
+    /**
+     * Generates the player instances with IDs 1 -> n.
+     * @param n int, the number of players.
+     * @return Player[], the array of player instances.
+     */
     private static Player[] generatePlayers(int n) {
         Player[] p = new Player[n];
         for (int i = 0; i < n; i++) {
@@ -110,7 +134,10 @@ public class CardGame {
         }
         return p;
     }
-
+    /**
+     * For each player check if they have won, used at game start.
+     * @return int, the ID of the winning player, -1 if no winner.
+     */
     public static int checkPlayersWon() {
         for (int i = 0; i < players.length; i++) {
             if (players[i].hasWon()) {
