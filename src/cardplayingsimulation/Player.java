@@ -27,7 +27,8 @@ class Player extends Thread {
 
         this.hand = new Card[4];
 
-        this.filePath = "outputs/player" + this.Id + "_output.txt";
+        String cwd = System.getProperty("user.dir");
+        this.filePath = cwd+"/outputs/player" + this.Id + "_output.txt";
         OutputHandler.createTextFile(filePath);
 
         if(Id%numPlayers == 0){

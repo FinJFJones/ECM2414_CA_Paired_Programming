@@ -17,9 +17,10 @@ public class CardGame {
     final static AtomicInteger winner = new AtomicInteger(-1);
 
     public static void main(String[] args) throws InterruptedException {
-        File outputsDir = new File("outputs");
+        String cwd = System.getProperty("user.dir");
+        File outputsDir = new File(cwd+"/outputs");
         outputsDir.mkdir();
-        OutputHandler.wipeDir("outputs");
+        OutputHandler.wipeDir(cwd+"/outputs");
 
         Scanner scanner = new Scanner(System.in);
         int numPlayers = getNumPlayers(scanner);
@@ -56,7 +57,7 @@ public class CardGame {
         }
 
         for (int i = 0; i < decks.size(); i++) {
-            String currentDeckPath = "outputs/deck" + (i + 1) + "_output.txt";
+            String currentDeckPath = cwd+"/outputs/deck" + (i + 1) + "_output.txt";
             OutputHandler.createTextFile(currentDeckPath);
             OutputHandler.writeToTextFile(currentDeckPath,
                     "deck" + (i + 1) + " contents:" + Dealing.showDeck(decks.get(i)),
