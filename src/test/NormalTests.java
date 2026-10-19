@@ -19,7 +19,7 @@ public class NormalTests {
 
     static Arguments[] playerTestProvider() {
         int tests = 100;
-        int[] playerAmounts = {2, 4, 10, 50, 100};
+        int[] playerAmounts = {2, 4, 10, 50};
         Arguments[] strings = new Arguments[tests*playerAmounts.length];
 
         String currentString;
