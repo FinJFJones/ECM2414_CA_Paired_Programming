@@ -113,7 +113,7 @@ public class BoundaryTests {
 
     void validateInstantWinOutput(int numPlayers) throws FileNotFoundException {
         for (int i = 0; i < numPlayers; i++) {
-            try (Scanner scanner = new Scanner(new File("outputs/player" + numPlayers + "_output.txt"))) {
+            try (Scanner scanner = new Scanner(new File("outputs/player" + (i+1) + "_output.txt"))) {
                 int lines = 0;
                 while (scanner.hasNextLine()) {
                     scanner.nextLine();

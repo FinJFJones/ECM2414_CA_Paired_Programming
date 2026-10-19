@@ -8,8 +8,10 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Provides the main static method to play the simulation.
+ * 
  * @author Thomas Russell and Finley Jones.
  */
 
@@ -22,14 +24,16 @@ public class CardGame {
 
     /**
      * The main static method to play the simulation.
+     * 
      * @param args String, CLI input.
-     * @throws InterruptedException if threads are interrupted before they finish whilst waiting for join().
+     * @throws InterruptedException if threads are interrupted before they finish
+     *                              whilst waiting for join().
      */
     public static void main(String[] args) throws InterruptedException {
         String cwd = System.getProperty("user.dir");
-        File outputsDir = new File(cwd+"/outputs");
+        File outputsDir = new File(cwd + "/outputs");
         outputsDir.mkdir();
-        OutputHandler.wipeDir(cwd+"/outputs");
+        OutputHandler.wipeDir(cwd + "/outputs");
 
         Scanner scanner = new Scanner(System.in);
         int numPlayers = getNumPlayers(scanner);
@@ -38,7 +42,7 @@ public class CardGame {
 
         decks = new ArrayList<>(numPlayers);
         for (int i = 0; i < numPlayers; i++) {
-            decks.add( new ConcurrentLinkedQueue<>() );
+            decks.add(new ConcurrentLinkedQueue<>());
         }
 
         players = generatePlayers(numPlayers);
@@ -51,23 +55,23 @@ public class CardGame {
         }
 
         Dealing.dealDecks(pack, decks);
-        
+
         winner.set(checkPlayersWon());
 
-        for (Player player : players) {
-            player.start();
-        }
+        try {
+            for (Player player : players) {
+                player.start();
+            }
 
-        while (winner.get() == -1) {
-            
-        }
-
-        for (Player player : players) {
-            player.join();
+            for (Player player : players) {
+                player.join();
+            }
+        } finally {
+            stopAllPlayers();
         }
 
         for (int i = 0; i < decks.size(); i++) {
-            String currentDeckPath = cwd+"/outputs/deck" + (i + 1) + "_output.txt";
+            String currentDeckPath = cwd + "/outputs/deck" + (i + 1) + "_output.txt";
             OutputHandler.createTextFile(currentDeckPath);
             OutputHandler.writeToTextFile(currentDeckPath,
                     "deck" + (i + 1) + " contents:" + Dealing.showDeck(decks.get(i)),
@@ -77,6 +81,7 @@ public class CardGame {
 
     /**
      * Gets and validates the number of players to play the game from CLI input.
+     * 
      * @param scanner Scanner, the scanner to use for getting CLI input.
      * @return int, the number of players.
      */
@@ -96,10 +101,12 @@ public class CardGame {
 
         return numPlayers;
     }
+
     /**
      * Gets and validates the input pack.
+     * 
      * @param scanner Scanner, the scanner to use for getting CLI input.
-     * @param n int, the number of players.
+     * @param n       int, the number of players.
      * @return Queue<Card>, the pack of cards.
      */
     private static Queue<Card> getPack(Scanner scanner, int n) {
@@ -122,8 +129,10 @@ public class CardGame {
 
         return pack;
     }
+
     /**
      * Generates the player instances with IDs 1 -> n.
+     * 
      * @param n int, the number of players.
      * @return Player[], the array of player instances.
      */
@@ -134,16 +143,36 @@ public class CardGame {
         }
         return p;
     }
+
     /**
      * For each player check if they have won, used at game start.
+     * 
      * @return int, the ID of the winning player, -1 if no winner.
      */
     public static int checkPlayersWon() {
         for (int i = 0; i < players.length; i++) {
             if (players[i].hasWon()) {
-                return i+1;
+                return i + 1;
             }
         }
         return -1;
+    }
+
+    public static void stopAllPlayers() throws InterruptedException {
+        Player[] currentPlayers = players;
+
+        if (currentPlayers == null) {
+            return;
+        }
+
+        for (Player player : currentPlayers) {
+            player.stopThread();
+        }
+
+        for (Player player : currentPlayers) {
+            if (player != Thread.currentThread()) {
+                player.join();
+            }
+        }
     }
 }
