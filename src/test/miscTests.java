@@ -123,13 +123,12 @@ public class miscTests {
             List<String> lines = Files.readAllLines(Paths.get(cwd + "/outputs/" + player_txt));
 
             for (String line : lines) {
-                assert (!(line.equals("player " + (i) + " discards a " + (i) + " to deck " + ((i + 1) % num))));
+                assertFalse(line.equals("player " + (i) + " discards a " + (i) + " to deck " + ((i + 1) % num)));
             }
         }
     }
 
-    void runWithInputConservation(ByteArrayInputStream in, String packPath, int num)
-            throws InterruptedException, IOException {
+    void runWithInputConservation(ByteArrayInputStream in, String packPath, int num) throws InterruptedException, IOException {
         List<Integer> values = new ArrayList<>();
 
         System.setIn(in);
@@ -147,37 +146,34 @@ public class miscTests {
 
             List<String> lines = Files.readAllLines(Paths.get(cwd + "/outputs/" + player_txt));
             String playerLine = lines.get(lines.size() - 1);
-
-            int[] deckValues = Arrays.stream(deckLine.trim().split("\\s+"))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
-
-            Pattern pattern = Pattern.compile("\\d+");
-            Matcher matcher = pattern.matcher(playerLine);
-
-            List<Integer> playerValues = new ArrayList<>();
-            while (matcher.find()) {
-                playerValues.add(Integer.parseInt(matcher.group()));
             
-            for (int n : deckValues){
-                values.add(n);
-            }
-            for (int n : playerValues){
-                values.add(n);
-            }
-            }
+            values.addAll(extractInts(deckLine));
+            values.addAll(extractInts(playerLine));
 
         }
 
-        assertEquals(values.size(), pack.size());
+        assertEquals(pack.size(),values.size());
 
         List<Integer> packList = new ArrayList<>();
         for (Card card : pack) {
             packList.add(card.getValue());
         }
+
         Collections.sort(packList);
         Collections.sort(values);
-        assert(values.equals(packList));
+        assertEquals(packList,values);
 
     }
+
+    
+    static List<Integer> extractInts(String line) {
+        final Pattern NUMBERS = Pattern.compile("\\d+");
+
+        List<Integer> result = new ArrayList<>();
+        Matcher m = NUMBERS.matcher(line);
+        while (m.find()) {
+            result.add(Integer.parseInt(m.group()));
+        }
+        return result.subList(1,result.size());
+}
 }
