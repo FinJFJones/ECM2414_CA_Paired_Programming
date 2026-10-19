@@ -1,5 +1,3 @@
-# Compile
-javac -d ./build ./src/*.java
+javac -d build src/cardplayingsimulation/*.java
 
-# Create .jar
-jar cvf ./dist/CardGame.jar *
+jar --create --file dist/cards.jar --main-class cardplayingsimulation.CardGame -C build .
